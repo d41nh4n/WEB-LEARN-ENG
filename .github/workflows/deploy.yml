@@ -36,6 +36,7 @@ jobs:
             --name allen-api \
             --restart unless-stopped \
             --env-file .env \
+            -e ASPNETCORE_ENVIRONMENT=Development \
             -p 8080:8080 \
             allen-api:latest
 
