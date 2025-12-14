@@ -1,0 +1,46 @@
+name: Deploy to Home Server
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    # Kích hoạt Runner trên máy nhà bạn
+    runs-on: self-hosted
+
+    steps:
+      - name: 1. Lấy code mới nhất về
+        uses: actions/checkout@v4
+
+      - name: 2. Tạo file .env từ Secret
+        run: |
+          # Lấy nội dung từ GitHub Secret 'ENV_FILE' ghi ra file .env tại chỗ
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: 3. Build Docker Image (Tại chỗ)
+        run: |
+          # Build image từ source code, đặt tên là allen-api
+          # Lưu ý: Kiểm tra kỹ đường dẫn file Dockerfile nhé
+          docker build -t allen-api:latest -f ./src/Allen.API/Dockerfile .
+
+      - name: 4. Deploy Container
+        run: |
+          # Dừng container cũ (nếu đang chạy)
+          docker stop allen-api || true
+          docker rm allen-api || true
+          
+          # Chạy container mới
+          # --net=host: Dùng mạng của máy chủ luôn (tiện cho Home Server) 
+          # hoặc dùng -p 80:8080 như cũ tùy bạn. Ở đây mình để -p cho an toàn.
+          docker run -d \
+            --name allen-api \
+            --restart unless-stopped \
+            --env-file .env \
+            -p 80:8080 \
+            allen-api:latest
+
+      - name: 5. Dọn dẹp rác (Image cũ)
+        run: |
+          # Xóa các image cũ không dùng đến để đỡ tốn ổ cứng Home Server
+          docker image prune -f
