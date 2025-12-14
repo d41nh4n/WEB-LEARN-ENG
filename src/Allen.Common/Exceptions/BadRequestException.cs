@@ -1,0 +1,7 @@
+﻿namespace Allen.Common;
+
+public class BadRequestException : DomainException
+{
+	public BadRequestException(string message)
+		: base("Bad Request", message) {}
+}

@@ -1,0 +1,77 @@
+# Build Folders
+bin/
+obj/
+
+# User-Specific Files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Core Configuration Files
+# appsettings*.json
+appsettings*.Development.json
+
+# Logs
+logs/
+*.log
+
+# NPM Packages
+node_modules/
+
+# Environment Variables
+.env
+
+# Visual Studio Specific
+.vs/
+.vscode/
+*.code-workspace
+
+# Packages
+packages/
+*.nupkg
+*.snupkg
+
+# macOS Specific
+.DS_Store
+
+# Windows Specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+.idea/*
+
+# JetBrains
+*.sln.iml
+
+# Publish Output
+publish/
+wwwroot/assets/
+
+# Coverage Reports
+coverage/
+*.coverage
+*.coveragexml
+*.coverlet
+
+# Temporary Files
+*.tmp
+*.temp
+*.cache
+*.pid
+*.pid.lock
+
+# Libman Cache
+libman.json
+wwwroot/lib/
+
+# Azure Deployment
+*.azure
+.localhistory/

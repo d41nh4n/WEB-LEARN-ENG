@@ -1,0 +1,11 @@
+﻿global using Allen.Common;
+global using Allen.Domain;
+global using Allen.Infrastructure;
+global using AutoMapper;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using System.Linq.Expressions;
+global using System.Reflection;

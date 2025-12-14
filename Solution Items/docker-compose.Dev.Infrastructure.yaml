@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672" 
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: "duonhungsw"
+
+  meilisearch:
+    container_name: meilisearch
+    image: getmeili/meilisearch:v1.8 
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: "supersecretkey"  
+      MEILI_ENV: "development"        
+    volumes:
+      - meili_data:/meili_data     
+
+volumes:
+  meili_data:

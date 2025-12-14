@@ -1,0 +1,12 @@
+﻿global using Allen.Common;
+global using Allen.Domain;
+global using Allen.Infrastructure;
+global using AutoMapper;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Caching.Distributed;
+global using System.Text.Json;
+global using System.Security.Claims;
+global using System.Reflection;
+global using Microsoft.Extensions.Logging;

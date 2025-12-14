@@ -1,0 +1,6 @@
+services:
+  allen.api:
+    image: ${DOCKER_REGISTRY-}allenapi
+    build:
+      context: .
+      dockerfile: src/Allen.API/Dockerfile
