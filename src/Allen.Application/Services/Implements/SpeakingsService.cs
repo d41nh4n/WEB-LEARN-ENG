@@ -9,6 +9,7 @@ internal sealed class SpeakingsService(
 	IBlobStorageService _blobStorageService,
     IAzureSpeechsService _azureSpeechsService,
     IGeminiService _geminiService,
+    IUserPointRepository _userPointRepository,
 	IUnitOfWork _unitOfWork,
 	IMapper _mapper) : ISpeakingsService
 {
@@ -98,7 +99,11 @@ internal sealed class SpeakingsService(
     }
 	public async Task<OperationResult> SubmitIeltsAsync(Guid userId, SubmitSpeakingIeltsModel model)
 	{
-        var pronunciationModel = _mapper.Map<PronunciationModel>(model);
+        var userPoint = await _userPointRepository.GetUserPointByUserIdAsync(userId);
+        if(userPoint!.TotalPoints < 10)
+            return OperationResult.Failure("Bạn không đủ điểm!");
+
+		var pronunciationModel = _mapper.Map<PronunciationModel>(model);
 		var analyzeResults = await _azureSpeechsService.AnalyzePronunciationAsync(pronunciationModel);
         var geminiRequest = new GeminiRequest
         {

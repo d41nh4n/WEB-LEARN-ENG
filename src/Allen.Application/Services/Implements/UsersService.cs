@@ -21,7 +21,8 @@ public class UsersService(
 			Id = u.Id,
 			Title = u.Title,
 			Description = u.Description,
-			Level = u.Level.ToString()
+			Level = u.Level.ToString(),
+			Status = u.LearningUnitStatusType.ToString()
 		}).ToList();
 	}
 

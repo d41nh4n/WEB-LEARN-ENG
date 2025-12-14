@@ -11,6 +11,7 @@ public class LearningUnitsRepository(SqlApplicationDbContext context) : Reposito
 					select new LearningUnit
 					{
 						Id = learningUnit.Id,
+						CategoryId = learningUnit.CategoryId,
 						Title = learningUnit.Title,
 						Level = learningUnit.Level.ToString(),
 						SkillType = learningUnit.SkillType.ToString(),

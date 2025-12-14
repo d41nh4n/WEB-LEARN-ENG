@@ -12,4 +12,6 @@ public interface IVocabularyRepository : IRepositoryBase<VocabularyEntity>
     Task<List<VocabularyEntity>> GetVocabulariesByIdsAsync(List<Guid> vocabIds);
 
     Task<QueryResult<VocabularyModel>> GetVocabulariesByTopicIdAsync(QueryInfo queryInfo, Guid topic);
+
+    Task<List<VocabularyEntity>> GetVocabulariesByWordsAsync(List<string> words);
 }

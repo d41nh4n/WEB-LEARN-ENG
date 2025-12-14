@@ -12,4 +12,5 @@ public class UnitItem
 	public string Title { get; set; } = null!;
 	public string? Description { get; set; }
 	public string? Level { get; set; }
+	public string? Status { get; set; }
 }

@@ -100,8 +100,6 @@ public class UsersRepository(
 							  Email = u.Email,
 							  Name = u.Name,
 							  Picture = u.Picture,
-							  //Role = roles,
-							  //Permission = u.Permission,
 							  RefreshToken = u.RefreshToken,
 							  RefreshTokenExpiryTime = u.RefreshTokenExpiryTime
 						  }).FirstOrDefaultAsync();
@@ -153,7 +151,9 @@ public class UsersRepository(
 				u.Level == targetLevel ||
 				u.Level == targetLevel + 1 ||
 				u.Level == targetLevel - 1)
-			.Where(u => !doneUnitIds.Contains(u.Id))     // 💥 Loại ở đây
+			.Where(u => !doneUnitIds.Contains(u.Id))
+			.Where(u => u.LearningUnitStatusType == LearningUnitStatusType.Public)
+			.Where(u => u.LearningUnitType == LearningUnitType.Ielts)
 			.AsNoTracking()
 			.ToListAsync();
 

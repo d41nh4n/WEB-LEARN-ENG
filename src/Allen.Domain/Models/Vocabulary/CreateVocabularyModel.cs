@@ -6,5 +6,4 @@ public class CreateVocabularyModel
     public string? Level { get; set; }
     public Guid TopicId { get; set; }
     public List<CreateVocabularyMeaningModel>? VocabularyMeaningModels { get; set; }
-    public List<Guid> TagsId { get; set; } = [];
 }

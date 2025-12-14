@@ -1,5 +1,4 @@
-﻿using Allen.Common.Settings.Enum;
-namespace Allen.Domain;
+﻿namespace Allen.Domain;
 
 public class DeckModel
 {
@@ -11,4 +10,5 @@ public class DeckModel
     public bool IsClone { get; set; } = false;
     public string? Level { get; set; }
     public int TotalFlashCard { get; set; } = 0;
+    public int NumberFlashcardsPerSession { get; set; } = 0;
 }

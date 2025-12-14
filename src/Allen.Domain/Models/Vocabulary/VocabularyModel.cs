@@ -7,5 +7,4 @@ public class VocabularyModel
     public string? Word { get; set; } = null!;
     public string? Level { get; set; }
     public IEnumerable<VocabularyMeaningModel>? VocabularyMeanings { get; set; }
-    public IEnumerable<TagModel>? Tags { get; set; }
 }

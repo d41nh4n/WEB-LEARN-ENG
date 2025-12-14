@@ -17,24 +17,14 @@ public class SqlApplicationDbContext(DbContextOptions<SqlApplicationDbContext> o
     public DbSet<QuestionEntity> Questions { get; set; }
     public DbSet<SubQuestionEntity> SubQuestions { get; set; }
     public DbSet<ReactionEntity> Reactions { get; set; }
-    //public DbSet<ReadingHighlightEntity> ReadingHighlights { get; set; }
     public DbSet<ReadingPassageEntity> ReadingPassages { get; set; }
-    //public DbSet<SpeakingPracticeEntity> SpeakingPractices { get; set; }
-    //public DbSet<UnitContentEntity> UnitContents { get; set; }
-    //public DbSet<UnitStepEntity> UnitSteps { get; set; }
     public DbSet<UserBlockEntity> UserBlocks { get; set; }
     public DbSet<UserAnswerEntity> UserAnswers { get; set; }
-    //public DbSet<UserUnitProgressEntity> UserUnitProgresses { get; set; }
-    //public DbSet<UserStepProgressEntity> UserStepProgresses { get; set; }
     public DbSet<UserVocabularyEntity> UserVocabularies { get; set; }
     public DbSet<VocabularyEntity> Vocabularies { get; set; }
-    public DbSet<VocabularyProgressEntity> VocabularyProgresses { get; set; }
     public DbSet<WritingSubmissionEntity> WritingSubmissions { get; set; }
-    public DbSet<VocabularyRelationEntity> VocabularyRelations { get; set; }
     public DbSet<VocabularyMeaningEntity> VocabularyMeanings { get; set; }
     public DbSet<TopicEntity> Topics { get; set; }
-    public DbSet<TagEntity> Tags { get; set; }
-    public DbSet<VocabularyTagEntity> VocabularyTags { get; set; }
     public DbSet<CategoryEntity> Categories { get; set; }
     public DbSet<WritingEntity> Writings { get; set; }
     public DbSet<TranscriptEntity> Transcripts { get; set; }
@@ -109,30 +99,6 @@ public class SqlApplicationDbContext(DbContextOptions<SqlApplicationDbContext> o
 
         modelBuilder.Entity<UserBlockEntity>().HasIndex(x => new { x.BlockedByUserId, x.BlockedUserId }).IsUnique();
 
-        modelBuilder.Entity<VocabularyRelationEntity>()
-            .HasOne(x => x.SourceVocab)
-            .WithMany()
-            .HasForeignKey(x => x.SourceVocabId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<VocabularyRelationEntity>()
-            .HasOne(x => x.RelateVocab)
-            .WithMany()
-            .HasForeignKey(x => x.RelateVocabId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<VocabularyTagEntity>()
-           .HasOne(vt => vt.Vocabulary)
-           .WithMany(v => v.VocabularyTags)
-           .HasForeignKey(vt => vt.VocabularyId)
-           .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<VocabularyTagEntity>()
-            .HasOne(vt => vt.Tag)
-            .WithMany(t => t.VocabularyTags)
-            .HasForeignKey(vt => vt.TagId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         modelBuilder.Entity<VocabularyEntity>()
             .HasOne(v => v.Topic)
             .WithMany(t => t.Vocabularies)
@@ -144,12 +110,6 @@ public class SqlApplicationDbContext(DbContextOptions<SqlApplicationDbContext> o
             .WithMany(a => a.WritingSubmissions)
             .HasForeignKey(s => s.AttemptId)
             .OnDelete(DeleteBehavior.Restrict); // hoặc NoAction
-
-
-        //modelBuilder.Entity<SpeakingPracticeEntity>()
-        //    .HasOne(sp => sp.SpeakingEntity)
-        //    .WithMany(s => s.SpeakingPractices)
-        //    .HasForeignKey(sp => sp.SpeakingId);
 
         modelBuilder.Entity<DeckEntity>()
            .HasOne(d => d.UserCreate)

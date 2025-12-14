@@ -69,6 +69,7 @@ public class DeckRepository(SqlApplicationDbContext context)
                 IsClone = d.IsClone,
                 Level = d.Level.ToString(),
                 TotalFlashCard = d.FlashCards.Count(),
+                NumberFlashcardsPerSession = d.NumberFlashCardsPerSession
             })
             .ToListAsync() ?? throw new NotFoundException(
                  ErrorMessageBase.Format(ErrorMessageBase.NotFound, nameof(DeckEntity), ""));

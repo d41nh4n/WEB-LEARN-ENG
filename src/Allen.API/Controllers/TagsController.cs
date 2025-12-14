@@ -1,6 +1,6 @@
 ﻿using Allen.API.Controllers;
 
-[Route("tags")]
+[Route("api/tags")]
 public class TagsController(
     ITagService _tagService
 ) : BaseApiController

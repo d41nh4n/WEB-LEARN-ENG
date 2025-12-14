@@ -4,7 +4,6 @@ public class VocabularyMappingProfile : Profile
 {
     public VocabularyMappingProfile()
     {
-        // Vocabulary
         CreateMap<VocabularyEntity, VocabularyModel>()
             .ForMember(dest => dest.Level,
                 opt => opt.MapFrom(src => src.Level.ToString()))
@@ -38,7 +37,6 @@ public class VocabularyMappingProfile : Profile
                         : Enum.Parse<LevelType>(src.Level, true)
                 ));
 
-        // Vocabulary Meaning
         CreateMap<VocabularyMeaningEntity, VocabularyMeaningModel>()
             .ForMember(dest => dest.PartOfSpeech,
                 opt => opt.MapFrom(src => src.PartOfSpeech.HasValue ? src.PartOfSpeech.Value.ToString() : null))
@@ -72,17 +70,27 @@ public class VocabularyMappingProfile : Profile
                         : Enum.Parse<PartOfSpeechType>(src.PartOfSpeech, true)
                 ));
 
-        // Vocabulary Tag
-        CreateMap<VocabularyTagEntity, VocabularyTagModel>().ReverseMap();
 
         // Topic
         CreateMap<TopicEntity, VocabularyTopicModel>().ReverseMap();
         CreateMap<TopicEntity, CreateTopicModel>().ReverseMap();
         CreateMap<TopicEntity, UpdateTopicModel>().ReverseMap();
 
-        // Tag
-        CreateMap<TagEntity, TagModel>().ReverseMap();
-        CreateMap<TagEntity, CreateTagModel>().ReverseMap();
-        CreateMap<TagEntity, UpdateTagModel>().ReverseMap();
+
+        CreateMap<VocabularyEntity, VocabularyPreviewModel>()
+            .ForMember(dest => dest.Word,
+                opt => opt.MapFrom(src => src.Word))
+
+            .ForMember(dest => dest.Topic,
+                opt => opt.MapFrom(src => src.Topic))
+
+            .ForMember(dest => dest.Level,
+                opt => opt.MapFrom(src => src.Level.ToString()))
+
+            .ForMember(dest => dest.IsExisting,
+                opt => opt.Ignore())
+
+            .ForMember(dest => dest.Meanings,
+                opt => opt.MapFrom(src => src.VocabularyMeanings));
     }
 }

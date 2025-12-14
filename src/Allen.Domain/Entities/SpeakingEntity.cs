@@ -7,5 +7,4 @@ public class SpeakingEntity : EntityBase<Guid>
     public Guid? MediaId { get; set; }
     public MediaEntity? Media { get; set; }
 	public int? SectionIndex { get; set; }
-	//public ICollection<SpeakingPracticeEntity> SpeakingPractices { get; set; } = [];
 }

@@ -20,36 +20,22 @@ public class UserEntity : EntityBase<Guid>, ISoftDelete
     public bool? IsDeleted { get; set; }
     public string RefreshToken { get; set; } = string.Empty;
     public DateTime RefreshTokenExpiryTime { get; set; }
-    public ICollection<UserRoleEntity> UserRoles { get; set; } = [];
+    public int Point { get; set; } = 0;
+	public ICollection<UserRoleEntity> UserRoles { get; set; } = [];
     public ICollection<PasswordResetTokenEntity> PasswordResetTokens { get; set; } = [];
     public ICollection<CommentEntity> Comments { get; set; } = [];
     public ICollection<FollowEntity> FollowFollowers { get; set; } = [];
     public ICollection<FollowEntity> Followings { get; set; } = [];
-
     public ICollection<PostEntity> Posts { get; set; } = [];
-
     public ICollection<ReactionEntity> Reactions { get; set; } = [];
-
-    //public ICollection<ReadingHighlightEntity> ReadingHighlights { get; set; } = [];
-
-    //public ICollection<SpeakingPracticeEntity> SpeakingPractices { get; set; } = [];
-
     public ICollection<UserBlockEntity> UserBlockBlockedByUsers { get; set; } = [];
     public ICollection<UserBlockEntity> UserBlockBlockedUsers { get; set; } = [];
     public ICollection<UserAnswerEntity> UserAnswers { get; set; } = [];
-    //public ICollection<UserUnitProgressEntity> UserUnitProgresses { get; set; } = [];
-
     public ICollection<UserVocabularyEntity> UserVocabularies { get; set; } = []        ;
-
-    public ICollection<VocabularyProgressEntity> VocabularyProgresses { get; set; } = [];
-
     public ICollection<WritingSubmissionEntity> WritingSubmissions { get; set; } = [];
-
     public ICollection<PaymentEntity> Payments { get; set; } = [];
-
     public ICollection<UserPointTransactionEntity> UserPointTransactions { get; set; } = [];
     public UserPointEntity? UserPoint { get; set; }
-
     public ICollection<PushSubscriptionEntity>? PushSubscriptions { get; set; }
 
     public static UserEntity Create(Guid id, string name, string email, string password, bool isDeleted)

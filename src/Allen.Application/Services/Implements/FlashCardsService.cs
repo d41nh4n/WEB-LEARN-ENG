@@ -539,9 +539,11 @@ public class FlashCardsService
                 var newState = FlashCardStateEntity.CreateNew(newCard.Id);
                 newStates.Add(_mapper.Map<FlashCardStateEntity>(newState));
             }
+            sourceDeck.TotalUsersUsing += 1;
 
             await _unitOfWork.Repository<FlashCardEntity>().AddRangeAsync(newCards);
             await _unitOfWork.Repository<FlashCardStateEntity>().AddRangeAsync(newStates);
+            _unitOfWork.Repository<DeckEntity>().UpdateAsync(sourceDeck);
             await _unitOfWork.SaveChangesAsync();
         });
 

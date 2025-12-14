@@ -9,7 +9,6 @@ public class VocabularyController(
 ) : BaseApiController
 {
     [HttpGet]
-    [Authorize]
     public async Task<QueryResult<VocabulariesModel>> GetVocabularies([FromQuery] QueryInfo queryInfo)
         => await _vocabularyService.GetVocabulariesAsync(queryInfo);
 
@@ -27,8 +26,8 @@ public class VocabularyController(
 
     [HttpPost]
     [ValidateModel]
-    public async Task<OperationResult> Create([FromBody] CreateVocabularyModel vocabularyModel)
-        => await _vocabularyService.CreateAsync(vocabularyModel);
+    public async Task<OperationResult> Create([FromBody] AddMultipleVocabularyModel vocabularyModel)
+        => await _vocabularyService.CreateMultiAsync(vocabularyModel);
 
     [HttpPatch("{id}")]
     [ValidateModel]
@@ -91,5 +90,12 @@ public class VocabularyController(
     public async Task<QuizVocabulariesResponeModel> GetQuizVocabulariesAsync([FromBody]QuizVocabulariesRequestModel model)
     {
         return await _vocabularyService.GetQuizVocabulariesAsync(model);
+    }
+
+    [HttpPost("generate-vocabulary")]
+    [ValidateModel]
+    public async Task<VocabularyGenerateResponseModel> BuildVocabularyByWordsAsync(WordVocabularyForGenerateModel request)
+    {
+        return await _vocabularyService.BuildVocabularyByWordsAsync(request);
     }
 }

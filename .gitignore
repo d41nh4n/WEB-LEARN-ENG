@@ -9,8 +9,8 @@ obj/
 *.sln.docstates
 
 # ASP.NET Core Configuration Files
-# appsettings*.json
-appsettings*.Development.json
+#appsettings*.json
+#appsettings*.Development.json
 
 # Logs
 logs/

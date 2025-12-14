@@ -5,11 +5,12 @@ public interface IVocabularyService
     Task<VocabularyModel> GetVocabularyByIdAsync(Guid vocabId);
     Task<QueryResult<VocabularyModel>> GetVocabulariesByTopicIdAsync(Guid topic, QueryInfo queryInfo);
     Task<VocabularyModel> GetVocabularyByWordAsync(string word);
-    Task<OperationResult> CreateAsync(CreateVocabularyModel vocabularyModel);
+    Task<OperationResult> CreateMultiAsync(AddMultipleVocabularyModel vocabularyModels);
     Task<OperationResult> DeleteAsync(Guid vocabId);
     Task<OperationResult> UpdateAsync(UpdateVocabularyModel updateVocabularyModel, Guid vocabId);
     ///======================== Basic Functions ========================///
     Task<List<VocabularyEntity>> GetVocabulariesByIdsAsync(List<Guid> vocabIds);
     ///======================== Advanced Functions ========================///
     Task<QuizVocabulariesResponeModel> GetQuizVocabulariesAsync(QuizVocabulariesRequestModel model);
+    Task<VocabularyGenerateResponseModel> BuildVocabularyByWordsAsync(WordVocabularyForGenerateModel request);
 }

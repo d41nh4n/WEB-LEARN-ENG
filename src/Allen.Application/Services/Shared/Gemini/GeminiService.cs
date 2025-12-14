@@ -127,63 +127,63 @@ public class GeminiService : IGeminiService
         await _chatHistory.AddMessageAsync(userId, sessionId,
             new GeminiChatMessage { Role = "model", Content = collected.ToString() });
     }
-	public async Task<SpeakingEvaluationResult?> AIAgentSubmitSpeakingAsync(GeminiRequest model)
-	{
-		var url = $"{_endpoint.Replace(":streamGenerateContent", ":generateContent")}?key={_apiKey}";
+    public async Task<SpeakingEvaluationResult?> AIAgentSubmitSpeakingAsync(GeminiRequest model)
+    {
+        var url = $"{_endpoint.Replace(":streamGenerateContent", ":generateContent")}?key={_apiKey}";
 
-		var prompt = BuildSpeakingIeltsExamerPrompt(model);
-		var request = new
-		{
-			contents = new[]
-			{
-			new
-			{
-				role = "user",
-				parts = new[] { new { text = prompt } }
-			}
-		}
-		};
+        var prompt = BuildSpeakingIeltsExamerPrompt(model);
+        var request = new
+        {
+            contents = new[]
+            {
+            new
+            {
+                role = "user",
+                parts = new[] { new { text = prompt } }
+            }
+        }
+        };
 
-		using var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
-		{
-			Content = JsonContent.Create(request)
-		};
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = JsonContent.Create(request)
+        };
 
-		using var response = await _httpClient.SendAsync(httpRequest);
-		response.EnsureSuccessStatusCode();
+        using var response = await _httpClient.SendAsync(httpRequest);
+        response.EnsureSuccessStatusCode();
 
-		var jsonResponse = await response.Content.ReadAsStringAsync();
+        var jsonResponse = await response.Content.ReadAsStringAsync();
 
-		try
-		{
-			using var doc = JsonDocument.Parse(jsonResponse);
-			var root = doc.RootElement;
+        try
+        {
+            using var doc = JsonDocument.Parse(jsonResponse);
+            var root = doc.RootElement;
 
-			if (root.TryGetProperty("candidates", out var candidates)
-				&& candidates.ValueKind == JsonValueKind.Array
-				&& candidates.GetArrayLength() > 0)
-			{
-				var text = candidates[0].GetProperty("content").GetProperty("parts")[0].GetProperty("text").GetString();
+            if (root.TryGetProperty("candidates", out var candidates)
+                && candidates.ValueKind == JsonValueKind.Array
+                && candidates.GetArrayLength() > 0)
+            {
+                var text = candidates[0].GetProperty("content").GetProperty("parts")[0].GetProperty("text").GetString();
 
-				if (!string.IsNullOrWhiteSpace(text))
-				{
-					// Làm sạch nếu Gemini bọc ```json ... ```
-					var clean = text.Trim().Trim('`', '\n', '\r', ' ');
-					if (clean.StartsWith("json", StringComparison.OrdinalIgnoreCase))
-						clean = clean[4..].Trim();
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    // Làm sạch nếu Gemini bọc ```json ... ```
+                    var clean = text.Trim().Trim('`', '\n', '\r', ' ');
+                    if (clean.StartsWith("json", StringComparison.OrdinalIgnoreCase))
+                        clean = clean[4..].Trim();
 
-					var result = JsonSerializer.Deserialize<SpeakingEvaluationResult>(clean);
-					return result;
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"AI evaluation parse failed: {ex.Message}");
-		}
+                    var result = JsonSerializer.Deserialize<SpeakingEvaluationResult>(clean);
+                    return result;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"AI evaluation parse failed: {ex.Message}");
+        }
 
-		return null;
-	}
+        return null;
+    }
 
     public async IAsyncEnumerable<string> AIAgentWritingAsync(GeminiRequest model)
     {
@@ -254,74 +254,74 @@ public class GeminiService : IGeminiService
             }
         }
     }
-	public async Task<string> AIAgentIeltsWritingAsync(GeminiRequest model)
-	{
-		var url = $"{_endpoint.Replace(":streamGenerateContent", ":generateContent")}?key={_apiKey}";
-		object request; 
+    public async Task<string> AIAgentIeltsWritingAsync(GeminiRequest model)
+    {
+        var url = $"{_endpoint.Replace(":streamGenerateContent", ":generateContent")}?key={_apiKey}";
+        object request;
 
-		if (model.SessionId == "Task1")
-		{
-			var builtPrompt = BuildIeltsWriting1Prompt(model);
-			request = new
-			{
-				contents = new object[]
-				{
-				new { role = "user", parts = new[] { new { text = builtPrompt } } }
-				}
-			};
-		}
-		else if (model.SessionId == "Task2")
-		{
-			var builtPrompt = BuildIeltsWriting2Prompt(model);
-			request = new
-			{
-				contents = new object[]
-				{
-				new { role = "user", parts = new[] { new { text = builtPrompt } } }
-				}
-			};
-		}
-		else
-		{
-			throw new ArgumentException("Invalid SessionId. Expected 'Task1' or 'Task2'.");
-		}
+        if (model.SessionId == "Task1")
+        {
+            var builtPrompt = BuildIeltsWriting1Prompt(model);
+            request = new
+            {
+                contents = new object[]
+                {
+                new { role = "user", parts = new[] { new { text = builtPrompt } } }
+                }
+            };
+        }
+        else if (model.SessionId == "Task2")
+        {
+            var builtPrompt = BuildIeltsWriting2Prompt(model);
+            request = new
+            {
+                contents = new object[]
+                {
+                new { role = "user", parts = new[] { new { text = builtPrompt } } }
+                }
+            };
+        }
+        else
+        {
+            throw new ArgumentException("Invalid SessionId. Expected 'Task1' or 'Task2'.");
+        }
 
-		var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
-		{
-			Content = JsonContent.Create(request)
-		};
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = JsonContent.Create(request)
+        };
 
-		using var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
-		response.EnsureSuccessStatusCode();
+        using var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
 
-		var jsonResponse = await response.Content.ReadAsStringAsync();
+        var jsonResponse = await response.Content.ReadAsStringAsync();
 
-		try
-		{
-			using var doc = JsonDocument.Parse(jsonResponse);
-			var root = doc.RootElement;
+        try
+        {
+            using var doc = JsonDocument.Parse(jsonResponse);
+            var root = doc.RootElement;
 
-			if (root.TryGetProperty("candidates", out var candidates)
-				&& candidates.ValueKind == JsonValueKind.Array && candidates.GetArrayLength() > 0)
-			{
-				var first = candidates[0];
+            if (root.TryGetProperty("candidates", out var candidates)
+                && candidates.ValueKind == JsonValueKind.Array && candidates.GetArrayLength() > 0)
+            {
+                var first = candidates[0];
 
-				if (first.TryGetProperty("content", out var content)
-					&& content.TryGetProperty("parts", out var parts)
-					&& parts.ValueKind == JsonValueKind.Array && parts.GetArrayLength() > 0)
-				{
-					var text = parts[0].GetProperty("text").GetString();
-					return text ?? string.Empty;
-				}
-			}
-		}
-		catch (JsonException ex)
-		{
-			Console.WriteLine($"JSON parsing error: {ex.Message}");
-		}
+                if (first.TryGetProperty("content", out var content)
+                    && content.TryGetProperty("parts", out var parts)
+                    && parts.ValueKind == JsonValueKind.Array && parts.GetArrayLength() > 0)
+                {
+                    var text = parts[0].GetProperty("text").GetString();
+                    return text ?? string.Empty;
+                }
+            }
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"JSON parsing error: {ex.Message}");
+        }
 
-		return string.Empty;
-	}
+        return string.Empty;
+    }
 
     public async IAsyncEnumerable<string> ChatGeminiAsync(string userId, string sessionId, GeminiRequest model)
     {
@@ -472,48 +472,125 @@ public class GeminiService : IGeminiService
         catch (JsonException) { }
         return string.Empty;
     }
-	//public async Task<List<GeneratedQuestion>> GenerateQuestionsAsync(QuestionGenerationRequest request)
-	//{
-	//	var prompt = BuildGeneratorPrompt(request);
 
-	//	var requestBody = new
-	//	{
-	//		contents = new[]
-	//		{
-	//			new
-	//			{
-	//				parts = new[]
-	//				{
-	//					new { text = prompt }
-	//				}
-	//			}
-	//		},
-	//		generationConfig = new
-	//		{
-	//			temperature = 0.7,
-	//			maxOutputTokens = 4096,
-	//			responseMimeType = "application/json"
-	//		}
-	//	};
+    public async Task<string> BuildVocabularyAsync(List<string> listVocabulary)
+    {
+        if (listVocabulary == null || listVocabulary.Count == 0)
+            return string.Empty;
 
-	//	var response = await _httpClient.PostAsJsonAsync($"{API_URL}?key={_apiKey}", requestBody);
-	//	response.EnsureSuccessStatusCode();
+        var url = $"{_endpoint.Replace(":streamGenerateContent", ":generateContent")}?key={_apiKey}";
 
-	//	var result = await response.Content.ReadFromJsonAsync<GeminiResponse>();
-	//	var jsonText = result?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+        // 1. Chuẩn hóa word list (giảm lỗi AI)
+        var wordListText = string.Join(", ",
+            listVocabulary
+                .Where(w => !string.IsNullOrWhiteSpace(w))
+                .Select(w => w.Trim().ToLower())
+                .Distinct()
+        );
 
-	//	if (string.IsNullOrEmpty(jsonText))
-	//	{
-	//		throw new Exception("Gemini returned empty response");
-	//	}
+        // 2. Build prompt vocabulary
+        var builtPrompt = BuildVocabularyPrompt(new GeminiRequest
+        {
+            Prompt = wordListText
+        });
 
-	//	var questions = JsonSerializer.Deserialize<QuestionsList>(jsonText, new JsonSerializerOptions
-	//	{
-	//		PropertyNameCaseInsensitive = true
-	//	});
+        // 3. Request body
+        var request = new
+        {
+            contents = new object[]
+            {
+            new
+            {
+                role = "user",
+                parts = new[] { new { text = builtPrompt } }
+            }
+            }
+        };
 
-	//	return questions?.Questions ?? new List<GeneratedQuestion>();
-	//}
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = JsonContent.Create(request)
+        };
+
+        using var response = await _httpClient.SendAsync(
+            httpRequest,
+            HttpCompletionOption.ResponseHeadersRead
+        );
+
+        response.EnsureSuccessStatusCode();
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+
+        // 4. Parse Gemini response
+        try
+        {
+            using var doc = JsonDocument.Parse(jsonResponse);
+            var root = doc.RootElement;
+
+            if (root.TryGetProperty("candidates", out var candidates)
+                && candidates.ValueKind == JsonValueKind.Array
+                && candidates.GetArrayLength() > 0)
+            {
+                var parts = candidates[0]
+                    .GetProperty("content")
+                    .GetProperty("parts");
+
+                if (parts.ValueKind == JsonValueKind.Array && parts.GetArrayLength() > 0)
+                {
+                    return parts[0].GetProperty("text").GetString() ?? string.Empty;
+                }
+            }
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"Gemini JSON parse error: {ex.Message}");
+        }
+
+        return string.Empty;
+    }
+
+    //public async Task<List<GeneratedQuestion>> GenerateQuestionsAsync(QuestionGenerationRequest request)
+    //{
+    //	var prompt = BuildGeneratorPrompt(request);
+
+    //	var requestBody = new
+    //	{
+    //		contents = new[]
+    //		{
+    //			new
+    //			{
+    //				parts = new[]
+    //				{
+    //					new { text = prompt }
+    //				}
+    //			}
+    //		},
+    //		generationConfig = new
+    //		{
+    //			temperature = 0.7,
+    //			maxOutputTokens = 4096,
+    //			responseMimeType = "application/json"
+    //		}
+    //	};
+
+    //	var response = await _httpClient.PostAsJsonAsync($"{API_URL}?key={_apiKey}", requestBody);
+    //	response.EnsureSuccessStatusCode();
+
+    //	var result = await response.Content.ReadFromJsonAsync<GeminiResponse>();
+    //	var jsonText = result?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+
+    //	if (string.IsNullOrEmpty(jsonText))
+    //	{
+    //		throw new Exception("Gemini returned empty response");
+    //	}
+
+    //	var questions = JsonSerializer.Deserialize<QuestionsList>(jsonText, new JsonSerializerOptions
+    //	{
+    //		PropertyNameCaseInsensitive = true
+    //	});
+
+    //	return questions?.Questions ?? new List<GeneratedQuestion>();
+    //}
 
     private string BuildWritingPrompt(GeminiRequest request)
     {
@@ -533,10 +610,10 @@ public class GeminiService : IGeminiService
         =======================================
         ";
     }
-	private string BuildIeltsWriting1Prompt(GeminiRequest request)
-	{
-		var writingRules = LoadTemplate("writing_task1_ielts.txt");
-		return $@"
+    private string BuildIeltsWriting1Prompt(GeminiRequest request)
+    {
+        var writingRules = LoadTemplate("writing_task1_ielts.txt");
+        return $@"
         {writingRules}
 
         =========================================
@@ -549,11 +626,11 @@ public class GeminiService : IGeminiService
         {request.Prompt?.Trim()}
         =========================================
         ";
-	}
-	private string BuildIeltsWriting2Prompt(GeminiRequest request)
-	{
-		var writingRules = LoadTemplate("writing_task2_ielts.txt");
-		return $@"
+    }
+    private string BuildIeltsWriting2Prompt(GeminiRequest request)
+    {
+        var writingRules = LoadTemplate("writing_task2_ielts.txt");
+        return $@"
         {writingRules}
 
         =========================================
@@ -566,7 +643,7 @@ public class GeminiService : IGeminiService
         {request.Prompt?.Trim()}
         =========================================
         ";
-	}
+    }
 
     private string BuildSpeakingPrompt(GeminiRequest request)
     {
@@ -587,10 +664,10 @@ public class GeminiService : IGeminiService
         ";
     }
     private string BuildSpeakingIeltsExamerPrompt(GeminiRequest request)
-	{
-		var speakingRule = LoadTemplate("speaking_ielts_examer.txt");
+    {
+        var speakingRule = LoadTemplate("speaking_ielts_examer.txt");
 
-		return $@"
+        return $@"
         {speakingRule}
 
         ===========================================
@@ -603,9 +680,9 @@ public class GeminiService : IGeminiService
         {request.Prompt?.Trim()}
         ===========================================
         ";
-	}
+    }
 
-	private string BuildPrompt(GeminiRequest request)
+    private string BuildPrompt(GeminiRequest request)
     {
         var rules = LoadTemplate("rules.txt");
 
@@ -641,6 +718,20 @@ public class GeminiService : IGeminiService
         SPECIFIC INSTRUCTIONS (Description):
         {request.Description?.Trim()} 
         =======================================
+        ";
+    }
+
+    private string BuildVocabularyPrompt(GeminiRequest request)
+    {
+        var rules = LoadTemplate("vocabulary_agent.txt");
+
+        return $@"
+        {rules}
+
+        ========================================
+        [INPUT WORD LIST]
+        {request.Prompt?.Trim()}
+        ========================================
         ";
     }
 
